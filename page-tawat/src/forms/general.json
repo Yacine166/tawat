@@ -1,0 +1,30 @@
+[
+  {
+    "value": "first_name",
+    "label": "الاسم",
+    "type": "input",
+    "required": true
+  },
+  {
+    "value": "last_name",
+    "label": "اللقب",
+    "type": "input",
+    "required": true
+  }, 
+  {
+    "value": "father_first_name",
+    "depends-on": "personalInformation_wilaya" ,
+    "dependency-condition": "alger||boumerdes||tipaza||blida",
+    "label": "اسم الأب",
+    "type": "input",
+    "required": true
+  },
+  {
+    "value": "grand_father_first_name",
+    "depends-on": "personalInformation_wilaya" ,
+    "dependency-condition": "alger||boumerdes||tipaza||blida",
+    "label": "اسم الجد",
+    "type": "input",
+    "required": true
+  }
+]
