@@ -2,16 +2,17 @@
   <div class="form-container">
     <FormSection ref="formSection"></FormSection>
     <div class="button-container d-flex justify-content-center">
-      <button class="btn btn-primary btn-lg" form="form-btn" @click="submitForm">تأكيد</button>
+      <button v-if="!loading" class="btn btn-primary btn-lg" @click="submitForm" >تأكيد</button>
+      <div v-else class="spinner-border" role="status"></div>
     </div>
+
   </div>
 </template>
 
 <script>
 import FormItem from "../../components/FormItem.vue";
 import FormSection from "../../components/FormSection.vue";
-import api from "../../services/api";
-
+import axios from "../../services/api";
 export default {
   name: 'RegistrationFormLayout',
   components: { FormItem, FormSection },
@@ -22,39 +23,41 @@ export default {
   },
   methods: {
     async submitForm() {
-
-      console.log("Submitting form...");
+      if (this.loading) return; // Prevent multiple submissions
+      this.loading = true;
       const formData = this.$refs.formSection.formData;
 
       // Check if formData contains all fields
       const emptyFields = Object.keys(formData).filter(
-        (key) => formData[key] === "" || formData[key] === null || formData[key] === undefined
+        (key) => formData[key] === "" || formData[key] === null
       );
 
       // Debugging: Check for empty fields
       if (emptyFields.length > 0) {
         console.log("Empty fields:", emptyFields);
+        this.loading = false;
         return;
       }
 
-      console.log("All fields are filled");
       await this.save(formData);
     },
 
     async save(formData) {
 
       // remove undefined values from formData
-      // mybe it make problems with api
       const cleanedFormData = Object.fromEntries(
         Object.entries(formData).filter(([key, value]) => value !== undefined)
       );
 
       try {
-        console.log("Sending request:", cleanedFormData);
-        await api.post("/register", cleanedFormData);
-        this.$emit('next');
+        const apiUrlRegister = `${import.meta.env.VITE_API_BASE_URL}/register`;
+        // Send formData to server
+        await axios.post(apiUrlRegister, cleanedFormData);
       } catch (error) {
         console.error("Error while submitting form:", error);
+      } finally {
+        this.loading = false;
+        this.$emit('next');
       }
     }
   }

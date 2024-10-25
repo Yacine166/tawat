@@ -12,12 +12,15 @@ import App from './App.vue';
 import quasarUserOptions from './quasar-user-options'; // Quasar configuration
 import router from './router';
 
+// import store
+import store from './functions/store';
 // Create Vue App
 const app = createApp(App);
 
 // Use Quasar and the router
 app.use(Quasar, quasarUserOptions); // Apply Quasar configuration
 app.use(router);
+app.use(store);
 
 // Mount the app to the DOM
 app.mount('#app');
